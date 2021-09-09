@@ -123,20 +123,21 @@ const CornerstoneViewportDownloadForm = ({ onClose, activeViewportIndex }) => {
   };
 
   return (
-    <ViewportDownloadForm
-      onClose={onClose}
-      minimumSize={MINIMUM_SIZE}
-      maximumSize={MAX_TEXTURE_SIZE}
-      defaultSize={DEFAULT_SIZE}
-      canvasClass={'cornerstone-canvas'}
-      activeViewport={activeEnabledElement}
-      enableViewport={enableViewport}
-      disableViewport={disableViewport}
-      updateViewportPreview={updateViewportPreview}
-      loadImage={loadImage}
-      toggleAnnotations={toggleAnnotations}
-      downloadBlob={downloadBlob}
-    />
+    // <ViewportDownloadForm
+    //   onClose={onClose}
+    //   minimumSize={MINIMUM_SIZE}
+    //   maximumSize={MAX_TEXTURE_SIZE}
+    //   defaultSize={DEFAULT_SIZE}
+    //   canvasClass={'cornerstone-canvas'}
+    //   activeViewport={activeEnabledElement}
+    //   enableViewport={enableViewport}
+    //   disableViewport={disableViewport}
+    //   updateViewportPreview={updateViewportPreview}
+    //   loadImage={loadImage}
+    //   toggleAnnotations={toggleAnnotations}
+    //   downloadBlob={downloadBlob}
+    // />
+    <div>Yaaaay</div>
   );
 };
 

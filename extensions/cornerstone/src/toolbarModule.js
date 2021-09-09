@@ -237,6 +237,14 @@ const definitions = [
     commandName: 'setCornerstoneLayout',
     context: 'ACTIVE_VIEWPORT::VTK',
   },
+  {
+    id: 'Theta',
+    label: 'Theta',
+    icon: 'search',
+    //
+    type: TOOLBAR_BUTTON_TYPES.COMMAND,
+    commandName: 'triggerAlgorithm',
+  },
 ];
 
 export default {

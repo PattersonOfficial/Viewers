@@ -294,6 +294,40 @@ const commandsModule = ({ servicesManager }) => {
         refreshCornerstoneViewports();
       }
     },
+    // trigger AI algorithm
+    triggerAlgorithm: ({ viewports }) => {
+      const { UINotificationService } = servicesManager.services;
+
+      const element = getEnabledElement(viewports.activeViewportIndex);
+      if (!element) {
+        return;
+      }
+
+      const enabledElement = cornerstone.getEnabledElement(element);
+      if (!enabledElement || !enabledElement.image) {
+        return;
+      }
+
+      console.log({ ImageID: enabledElement.image.imageId });
+
+      UINotificationService.show({
+        title: 'Image ID?',
+        message: enabledElement.image.imageId,
+      });
+
+      // if (enabledElement) {
+      //   let viewport = cornerstone.getViewport(enabledElement);
+      //   console.log({viewport});
+      //   UINotificationService.show({
+      //     title: 'What does a nosey pepper do?',
+      //     message: 'Gets jalapeno business! hehehehe',
+      //   });
+      // } else {
+      //   UINotificationService.show({
+      //     message: 'ViewPort Not Found',
+      //   });
+      // }
+    },
   };
 
   const definitions = {
@@ -406,6 +440,11 @@ const commandsModule = ({ servicesManager }) => {
     },
     setWindowLevel: {
       commandFn: actions.setWindowLevel,
+      storeContexts: ['viewports'],
+      options: {},
+    },
+    triggerAlgorithm: {
+      commandFn: actions.triggerAlgorithm,
       storeContexts: ['viewports'],
       options: {},
     },
