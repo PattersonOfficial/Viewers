@@ -17,6 +17,11 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
     return;
   }
 
+  UINotificationService.show({
+    title: 'AI Notification',
+    message: 'AI algorithm functionality triggered',
+  });
+
   const viewport = Object.assign({}, enabledElement.viewport);
 
   // getting image id from the enabled element object

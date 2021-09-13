@@ -77,6 +77,11 @@ export default {
           label: 'Measurements',
           target: 'measurement-panel',
         },
+        {
+          icon: 'search',
+          label: 'Theta Details',
+          target: 'lesion-tracker-panel',
+        },
       ],
       components: [
         {
