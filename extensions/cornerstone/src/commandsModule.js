@@ -1,6 +1,7 @@
 import cornerstone from 'cornerstone-core';
 import cornerstoneTools from 'cornerstone-tools';
 import OHIF from '@ohif/core';
+import TriggerAlgorithm from './components/AITrigger';
 
 import setCornerstoneLayout from './utils/setCornerstoneLayout.js';
 import { getEnabledElement } from './state';
@@ -251,6 +252,7 @@ const commandsModule = ({ servicesManager }) => {
       setCornerstoneLayout();
     },
     setWindowLevel: ({ viewports, window, level }) => {
+
       const enabledElement = getEnabledElement(viewports.activeViewportIndex);
 
       if (enabledElement) {
@@ -260,6 +262,9 @@ const commandsModule = ({ servicesManager }) => {
           windowWidth: Number(window),
           windowCenter: Number(level),
         };
+
+        console({viewport});
+
         cornerstone.setViewport(enabledElement, viewport);
       }
     },
@@ -296,37 +301,7 @@ const commandsModule = ({ servicesManager }) => {
     },
     // trigger AI algorithm
     triggerAlgorithm: ({ viewports }) => {
-      const { UINotificationService } = servicesManager.services;
-
-      const element = getEnabledElement(viewports.activeViewportIndex);
-      if (!element) {
-        return;
-      }
-
-      const enabledElement = cornerstone.getEnabledElement(element);
-      if (!enabledElement || !enabledElement.image) {
-        return;
-      }
-
-      console.log({ ImageID: enabledElement.image.imageId });
-
-      UINotificationService.show({
-        title: 'Image ID?',
-        message: enabledElement.image.imageId,
-      });
-
-      // if (enabledElement) {
-      //   let viewport = cornerstone.getViewport(enabledElement);
-      //   console.log({viewport});
-      //   UINotificationService.show({
-      //     title: 'What does a nosey pepper do?',
-      //     message: 'Gets jalapeno business! hehehehe',
-      //   });
-      // } else {
-      //   UINotificationService.show({
-      //     message: 'ViewPort Not Found',
-      //   });
-      // }
+      TriggerAlgorithm({ viewports, servicesManager });
     },
   };
 
