@@ -18,8 +18,7 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
   }
 
   UINotificationService.show({
-    title: 'AI Notification',
-    message: 'AI algorithm functionality triggered',
+    message: 'AI Algorithm Functionality Triggered',
   });
 
   const viewport = Object.assign({}, enabledElement.viewport);
@@ -36,15 +35,17 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
   // current viewport
   const vport = cornerstone.getViewport(element);
 
+  // * The viewports variable contains the sopClassUIDs from viewportSpecificData[0]
+
+  console.log({
+    sopClassUIDs: viewports.viewportSpecificData[0],
+    vport,
+    viewport,
+  });
+
   cornerstone.loadImage(imageID).then(image => {
     // adding layer to current viewport
     const layerId = cornerstone.addLayer(element, image);
-
-    // sync the viewports together(test if you can remove them)
-    enabledElement.syncViewports = true;
-
-    // update the current image on the viewport with the new image
-    cornerstone.updateImage(element);
 
     // Setting the new image layer as the active layer
     cornerstone.setActiveLayer(element, layerId);
@@ -52,15 +53,12 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
     // resize the viewport to the fit the window dimensions
     cornerstone.resize(element, true);
 
-    // Setting the viewport(check if it can be removed)
-    // cornerstone.setViewport(element, viewport);
-
     //* Applying opacity to new active layer
     // Getting active layer
     const layer = cornerstone.getActiveLayer(element);
 
     // change the opacity
-    layer.options.opacity = parseFloat(0.2);
+    layer.options.opacity = parseFloat(0.5);
 
     // update the element to apply new settings
     cornerstone.updateImage(element);
