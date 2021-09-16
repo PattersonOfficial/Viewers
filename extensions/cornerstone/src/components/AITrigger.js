@@ -21,15 +21,15 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
     message: 'AI Algorithm Functionality Triggered',
   });
 
-  const viewport = Object.assign({}, enabledElement.viewport);
+  let viewport = Object.assign({}, enabledElement.viewport);
+  viewport.voi.windowCenter = 500;
+  viewport.voi.windowWidth = 50;
 
   // getting image id from the enabled element object
-  // const imageID = enabledElement.image.imageId;
+  const imageOld = enabledElement.image;
 
-  // console.log({ imageID });
+  console.log({ imageOld });
 
-  // const imageID = `wadors:https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.300468367115324750799216325524/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.160581996101274003332486824899/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.935497942492562520984165038166/frames/1`;
-  // const imageID = `wadors:https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.300468367115324750799216325524/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.281681708980933551568220384032/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.127872585309705092195009254415/frames/1`;
   const imageID = `wadors:https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.871108593056125491804754960339/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.367700692008930469189923116409/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.211875730639149337122432580305/frames/1`;
 
   // current viewport
@@ -40,25 +40,40 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
   console.log({
     sopClassUIDs: viewports.viewportSpecificData[0],
     vport,
-    viewport,
   });
 
   cornerstone.loadImage(imageID).then(image => {
+    console.log({ image });
+
     // adding layer to current viewport
     const layerId = cornerstone.addLayer(element, image);
 
     // Setting the new image layer as the active layer
     cornerstone.setActiveLayer(element, layerId);
 
-    // resize the viewport to the fit the window dimensions
-    cornerstone.resize(element, true);
+    // getting all layers to add the image options
+    const layers = cornerstone.getLayers(element);
 
     //* Applying opacity to new active layer
+
     // Getting active layer
     const layer = cornerstone.getActiveLayer(element);
 
-    // change the opacity
-    layer.options.opacity = parseFloat(0.5);
+    for (let redo of layers) {
+      const id = redo.layerId;
+
+      if (id !== layerId) {
+        const oldLayer = cornerstone.getLayer(element, id);
+        oldLayer.options = {};
+        oldLayer.viewport.colormap = null;
+        console.log({ oldLayer });
+        cornerstone.updateImage(element);
+      } else {
+        layer.options.opacity = parseFloat(0.5);
+        layer.viewport.colormap = 'hotIron';
+        cornerstone.updateImage(element);
+      }
+    }
 
     // update the element to apply new settings
     cornerstone.updateImage(element);
