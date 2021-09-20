@@ -67,12 +67,34 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
     // Getting active layer
     const layer = cornerstone.getActiveLayer(element);
 
-    // change the opacity
-    layer.options.opacity = parseFloat(0.5);
-    layer.viewport.colormap = 'hotIron';
+    //** Loop through all layers and set default options to non active layer */
+    const allLayers = cornerstone.getLayers(element);
+
+    console.log({
+      layer,
+      allLayers,
+    });
+
+    for (let otherLayer of allLayers) {
+      if (layer.layerId === otherLayer.layerId) {
+        // change the opacity and colormap
+        layer.options.opacity = parseFloat(0.5);
+        layer.viewport.colormap = 'hotIron';
+
+        // update the element to apply new settings
+        cornerstone.updateImage(element);
+      } else {
+        // change the opacity
+        otherLayer.options.opacity = parseFloat(0.5);
+        otherLayer.viewport.colormap = 'gray';
+
+        // update the element to apply new settings
+        cornerstone.updateImage(element);
+      }
+    }
 
     // update the element to apply new settings
-    cornerstone.updateImage(element);
+    // cornerstone.updateImage(element);
   });
 };
 
