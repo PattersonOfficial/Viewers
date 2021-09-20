@@ -2,35 +2,58 @@ import React, { useEffect } from 'react';
 import OHIF from '@ohif/core';
 import cornerstone from 'cornerstone-core';
 import './AITriggerComponent.css';
+import { getEnabledElement } from '../../../../../extensions/cornerstone/src/state';
 
 const AITriggerComponentPanel = () => {
   const [opacity, setOpacity] = React.useState(0.5);
   const [sync, setSync] = React.useState(true);
-  const [colors, setColors] = React.useState([]);
-  const [colorMap, setColorMap] = React.useState('None');
+  const [colorMap, setColorMap] = React.useState('hotIron');
+  const [element, setElement] = React.useState({});
+  const [enabledElement, setEnabledElement] = React.useState({});
+  const colors = cornerstone.colors.getColormapsList();
 
   useEffect(() => {
-    const colorsList = cornerstone.colors.getColormapsList();
-    setColors(colorsList);
-    console.log({ Colors: colors });
+    const viewports = localStorage.getItem('viewports');
+    const refinedViewports = JSON.parse(viewports);
+
+    // setting active viewport reference to element variable
+    const element = getEnabledElement(refinedViewports.activeViewportIndex);
+    if (!element) {
+      return;
+    }
+
+    // retriving cornerstone enable element object
+    const enabledElement = cornerstone.getEnabledElement(element);
+    if (!enabledElement || !enabledElement.image) {
+      return;
+    }
+
+    setElement(element);
+    setEnabledElement(enabledElement);
   }, []);
 
   const onHandleOpacuty = event => {
     setOpacity(event.target.value);
 
-    // const viewport = cornerstone.ge
-
-    // console.log({ viewport });
+    const layer = cornerstone.getActiveLayer(element);
+    layer.options.opacity = event.target.value;
+    // update the element to apply new settings
+    cornerstone.updateImage(element);
   };
 
   const onHandleSync = () => {
     setSync(!sync);
-
-    console.log({ Sync: !sync });
+    enabledElement.syncViewports = !sync;
+    // update the element to apply new settings
+    cornerstone.updateImage(element);
   };
 
-  const onHandleColorChange = () => {
-    console.log('Color was changed!!!');
+  const onHandleColorChange = event => {
+    setColorMap(event.target.value);
+    const layer = cornerstone.getActiveLayer(element);
+    layer.viewport.colormap = event.target.value;
+    // update the element to apply new settings
+    cornerstone.updateImage(element);
   };
 
   return (
@@ -68,14 +91,14 @@ const AITriggerComponentPanel = () => {
             onChange={onHandleColorChange}
             value={colorMap}
           >
-            <option key="none" value="None" dis>
+            <option key="none" value="None">
               None
             </option>
-            {colors.map((color, index) => {
+            {colors.map((color, index) => (
               <option key={index} value={color.id}>
                 {color.name}
-              </option>;
-            })}
+              </option>
+            ))}
           </select>
         </label>
       </form>

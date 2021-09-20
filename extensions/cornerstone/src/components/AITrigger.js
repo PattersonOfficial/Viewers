@@ -17,6 +17,9 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
     return;
   }
 
+  // storing viewport to get all necessary data from cornerstone in panel element
+  localStorage.setItem('viewports', JSON.stringify(viewports));
+
   UINotificationService.show({
     message: 'AI Algorithm Functionality Triggered',
   });
@@ -48,38 +51,25 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
     // adding layer to current viewport
     const layerId = cornerstone.addLayer(element, image);
 
-    // display the new image to be used
-    cornerstone.displayImage(element, image);
+    // sync the viewports together(test if you can remove them)
+    enabledElement.syncViewports = true;
+
+    // update the current image on the viewport with the new image
+    cornerstone.updateImage(element);
 
     // Setting the new image layer as the active layer
     cornerstone.setActiveLayer(element, layerId);
 
-    // getting all layers to add the image options
-    const layers = cornerstone.getLayers(element);
+    // resize the viewport to the fit the window dimensions
+    cornerstone.resize(element, true);
 
     //* Applying opacity to new active layer
-
     // Getting active layer
     const layer = cornerstone.getActiveLayer(element);
 
-    for (let redo of layers) {
-      const id = redo.layerId;
-
-      if (id !== layerId) {
-        const oldLayer = cornerstone.getLayer(element, id);
-        oldLayer.options = {};
-        oldLayer.viewport.colormap = null;
-        console.log({ oldLayer });
-        cornerstone.restoreImage(oldLayer.image);
-        cornerstone.updateImage(element);
-      } else {
-        layer.options.opacity = parseFloat(0.5);
-        layer.viewport.colormap = 'hotIron';
-        cornerstone.updateImage(element);
-      }
-    }
-
-    cornerstone.fitToWindow(element);
+    // change the opacity
+    layer.options.opacity = parseFloat(0.5);
+    layer.viewport.colormap = 'hotIron';
 
     // update the element to apply new settings
     cornerstone.updateImage(element);
