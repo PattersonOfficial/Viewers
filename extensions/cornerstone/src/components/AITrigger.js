@@ -41,7 +41,7 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
   // * The viewports variable contains the sopClassUIDs from viewportSpecificData[0]
 
   console.log({
-    sopClassUIDs: viewports.viewportSpecificData[0],
+    sopClassUIDs: viewports.viewportSpecificData[0].sopClassUIDs,
     vport,
   });
 

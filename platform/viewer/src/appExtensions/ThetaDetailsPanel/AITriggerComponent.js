@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import OHIF from '@ohif/core';
-import cornerstone from 'cornerstone-core';
+import cornerstone, { setActiveLayer } from 'cornerstone-core';
 import './AITriggerComponent.css';
 import { getEnabledElement } from '../../../../../extensions/cornerstone/src/state';
 
@@ -10,10 +10,15 @@ const AITriggerComponentPanel = () => {
   const [colorMap, setColorMap] = React.useState('hotIron');
   const [element, setElement] = React.useState({});
   const [enabledElement, setEnabledElement] = React.useState({});
+  const [layers, setLayers] = React.useState([]);
+  const [acLayer, setAcLayers] = React.useState('');
   const colors = cornerstone.colors.getColormapsList();
 
   useEffect(() => {
+    // getting stringified object of viewport from localStorage
     const viewports = localStorage.getItem('viewports');
+
+    // convert derived viewport object from string to object
     const refinedViewports = JSON.parse(viewports);
 
     // setting active viewport reference to element variable
@@ -28,6 +33,11 @@ const AITriggerComponentPanel = () => {
       return;
     }
 
+    // retriveing all current layers
+    const allLayers = cornerstone.getLayers(element);
+
+    // updating all state variables to their new values
+    setLayers([...allLayers]);
     setElement(element);
     setEnabledElement(enabledElement);
   }, []);
@@ -35,23 +45,45 @@ const AITriggerComponentPanel = () => {
   const onHandleOpacuty = event => {
     setOpacity(event.target.value);
 
+    // getting active layer for modification
     const layer = cornerstone.getActiveLayer(element);
+
+    // setting prefered opacity for active layer
     layer.options.opacity = event.target.value;
+
     // update the element to apply new settings
     cornerstone.updateImage(element);
   };
 
   const onHandleSync = () => {
     setSync(!sync);
+
+    // toggling between syncing viewports
     enabledElement.syncViewports = !sync;
+
     // update the element to apply new settings
     cornerstone.updateImage(element);
   };
 
   const onHandleColorChange = event => {
     setColorMap(event.target.value);
+
+    // getting the active layer for the viewport for modification
     const layer = cornerstone.getActiveLayer(element);
+
+    // setting colormap to selected color
     layer.viewport.colormap = event.target.value;
+
+    // update the element to apply new settings
+    cornerstone.updateImage(element);
+  };
+
+  const onHandleLayerChange = event => {
+    setAcLayers(event.target.value);
+
+    // setting active layer with the selected layer
+    cornerstone.setActiveLayer(element, event.target.value);
+
     // update the element to apply new settings
     cornerstone.updateImage(element);
   };
@@ -87,16 +119,32 @@ const AITriggerComponentPanel = () => {
         <label>
           <select
             id="colormaps"
-            className="colorMaps"
+            className="select-container"
             onChange={onHandleColorChange}
             value={colorMap}
           >
-            <option key="none" value="None">
+            <option key="undefined" value="None">
               None
             </option>
             {colors.map((color, index) => (
               <option key={index} value={color.id}>
                 {color.name}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <h4>Select Active Layer</h4>
+        <label>
+          <select
+            id="layers"
+            className="select-container"
+            onChange={onHandleLayerChange}
+            value={acLayer}
+          >
+            {layers.map((layer, index) => (
+              <option key={index} value={layer.layerId}>
+                Layer {index + 1}
               </option>
             ))}
           </select>
