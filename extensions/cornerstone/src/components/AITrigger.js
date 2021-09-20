@@ -48,6 +48,9 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
     // adding layer to current viewport
     const layerId = cornerstone.addLayer(element, image);
 
+    // display the new image to be used
+    cornerstone.displayImage(element, image);
+
     // Setting the new image layer as the active layer
     cornerstone.setActiveLayer(element, layerId);
 
@@ -67,6 +70,7 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
         oldLayer.options = {};
         oldLayer.viewport.colormap = null;
         console.log({ oldLayer });
+        cornerstone.restoreImage(oldLayer.image);
         cornerstone.updateImage(element);
       } else {
         layer.options.opacity = parseFloat(0.5);
@@ -74,6 +78,8 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
         cornerstone.updateImage(element);
       }
     }
+
+    cornerstone.fitToWindow(element);
 
     // update the element to apply new settings
     cornerstone.updateImage(element);

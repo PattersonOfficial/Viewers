@@ -1,5 +1,6 @@
 import React from 'react';
 import ConnectedMeasurementTable from './ConnectedMeasurementTable.js';
+import AITriggerComponentPanel from '../ThetaDetailsPanel/AITriggerComponent';
 import init from './init.js';
 
 import LabellingFlow from '../../components/Labelling/LabellingFlow';
@@ -70,6 +71,9 @@ export default {
         }}
       />
     );
+
+    const ExtentedAITriggerComponentPanel = () => <AITriggerComponentPanel />;
+
     return {
       menuOptions: [
         {
@@ -80,13 +84,18 @@ export default {
         {
           icon: 'search',
           label: 'Theta Details',
-          target: 'lesion-tracker-panel',
+          target: 'theta-details-panel',
         },
       ],
       components: [
         {
           id: 'measurement-panel',
           component: ExtendedConnectedMeasurementTable,
+        },
+        {
+          id: 'theta-details-panel',
+          // component: AITriggerComponentPanel,
+          component: ExtentedAITriggerComponentPanel,
         },
       ],
       defaultContext: ['VIEWER'],
