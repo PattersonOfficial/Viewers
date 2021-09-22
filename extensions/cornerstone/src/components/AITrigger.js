@@ -29,9 +29,7 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
   viewport.voi.windowWidth = 50;
 
   // getting image id from the enabled element object
-  const imageOld = enabledElement.image;
-
-  console.log({ imageOld });
+  // const imageOld = enabledElement.image;
 
   const imageID = `wadors:https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.871108593056125491804754960339/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.367700692008930469189923116409/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.211875730639149337122432580305/frames/1`;
 
@@ -46,8 +44,6 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
   });
 
   cornerstone.loadImage(imageID).then(image => {
-    console.log({ image });
-
     // adding layer to current viewport
     const layerId = cornerstone.addLayer(element, image);
 
@@ -70,11 +66,6 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
     //** Loop through all layers and set default options to non active layer */
     const allLayers = cornerstone.getLayers(element);
 
-    console.log({
-      layer,
-      allLayers,
-    });
-
     for (let otherLayer of allLayers) {
       if (layer.layerId === otherLayer.layerId) {
         // change the opacity and colormap
@@ -91,10 +82,10 @@ const TriggerAlgorithm = ({ viewports, servicesManager }) => {
         // update the element to apply new settings
         cornerstone.updateImage(element);
       }
-    }
 
-    // update the element to apply new settings
-    // cornerstone.updateImage(element);
+      // rescaling all images to eachother layer
+      cornerstone.rescaleImage(otherLayer);
+    }
   });
 };
 

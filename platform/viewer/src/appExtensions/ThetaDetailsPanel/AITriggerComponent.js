@@ -6,12 +6,12 @@ import { getEnabledElement } from '../../../../../extensions/cornerstone/src/sta
 
 const AITriggerComponentPanel = () => {
   const [opacity, setOpacity] = React.useState(0.5);
-  const [sync, setSync] = React.useState(true);
+  const [sync, setSync] = React.useState(false);
   const [colorMap, setColorMap] = React.useState('hotIron');
   const [element, setElement] = React.useState({});
   const [enabledElement, setEnabledElement] = React.useState({});
   const [layers, setLayers] = React.useState([]);
-  const [acLayer, setAcLayers] = React.useState('');
+  const [acLayer, setAcLayer] = React.useState('');
   const colors = cornerstone.colors.getColormapsList();
 
   useEffect(() => {
@@ -36,7 +36,11 @@ const AITriggerComponentPanel = () => {
     // retriveing all current layers
     const allLayers = cornerstone.getLayers(element);
 
+    // getting active layer for modification
+    const layer = cornerstone.getActiveLayer(element);
+
     // updating all state variables to their new values
+    setAcLayer(layer.layerId);
     setLayers([...allLayers]);
     setElement(element);
     setEnabledElement(enabledElement);
@@ -79,7 +83,7 @@ const AITriggerComponentPanel = () => {
   };
 
   const onHandleLayerChange = event => {
-    setAcLayers(event.target.value);
+    setAcLayer(event.target.value);
 
     // setting active layer with the selected layer
     cornerstone.setActiveLayer(element, event.target.value);
@@ -123,9 +127,6 @@ const AITriggerComponentPanel = () => {
             onChange={onHandleColorChange}
             value={colorMap}
           >
-            <option key="undefined" value="None">
-              None
-            </option>
             {colors.map((color, index) => (
               <option key={index} value={color.id}>
                 {color.name}
@@ -134,21 +135,25 @@ const AITriggerComponentPanel = () => {
           </select>
         </label>
 
-        <h4>Select Active Layer</h4>
-        <label>
-          <select
-            id="layers"
-            className="select-container"
-            onChange={onHandleLayerChange}
-            value={acLayer}
-          >
-            {layers.map((layer, index) => (
-              <option key={index} value={layer.layerId}>
-                Layer {index + 1}
-              </option>
-            ))}
-          </select>
-        </label>
+        {layers.length > 0 && (
+          <div>
+            <h4>Select Active Layer</h4>
+            <label>
+              <select
+                id="layers"
+                className="select-container"
+                onChange={onHandleLayerChange}
+                value={acLayer}
+              >
+                {layers.map((layer, index) => (
+                  <option key={index} value={layer.layerId}>
+                    Layer {index + 1}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
       </form>
     </div>
   );
