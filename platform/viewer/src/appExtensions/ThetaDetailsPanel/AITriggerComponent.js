@@ -15,14 +15,14 @@ const AITriggerComponentPanel = () => {
   const colors = cornerstone.colors.getColormapsList();
 
   useEffect(() => {
-    // getting stringified object of viewport from localStorage
-    const viewports = localStorage.getItem('viewports');
+    // getting all viewports
+    const view_ports = cornerstone.getEnabledElements();
+    const viewports = view_ports[0];
 
-    // convert derived viewport object from string to object
-    const refinedViewports = JSON.parse(viewports);
+    console.log({ viewports, view_ports});
 
     // setting active viewport reference to element variable
-    const element = getEnabledElement(refinedViewports.activeViewportIndex);
+    const element = getEnabledElement(viewports.activeViewportIndex);
     if (!element) {
       return;
     }
